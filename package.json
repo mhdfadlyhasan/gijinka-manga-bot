@@ -2,10 +2,10 @@
   "name": "gijinka-manga-bot",
   "version": "1.0.0",
   "description": "asdfasdfasdf",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "test": "npm test",
-    "start": "node main.js"
+    "start": "node -r dotenv/config ."
   },
   "repository": {
     "type": "git",
