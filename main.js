@@ -28,7 +28,8 @@ client.on('interactionCreate', async interaction => {
   if (interaction.commandName === 'ping') {
     const chapter = 11;
     resp = await axios.get('https://api.mangadex.org/manga/acdbf57f-bf54-41b4-8d92-b3f3d14c852e/aggregate');
-    await interaction.reply({ content: `${resp.data.volumes["1"].chapters["1"].chapter}` });
+    manga = newManga(resp.data)
+    await interaction.reply({ content: `title manga ${manga.LatestChapter}` });
   };
 });
 
