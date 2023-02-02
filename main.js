@@ -1,7 +1,7 @@
 const { REST, Routes, Client, GatewayIntentBits } = require('discord.js');
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 const axios = require('axios');
-
+const {newManga} = require('./manga.js');
 const TOKEN = process.env.TOKEN
 const APP_ID = process.env.APP_ID
 
@@ -27,9 +27,9 @@ client.on('interactionCreate', async interaction => {
 
   if (interaction.commandName === 'ping') {
     const chapter = 11;
-    resp = await axios.get('https://api.mangadex.org/manga/acdbf57f-bf54-41b4-8d92-b3f3d14c852e/aggregate');
+    resp = await axios.get('https://api.mangadex.org/manga/acdbf57f-bf54-41b4-8d92-b3f3d14c852e/');
     manga = newManga(resp.data)
-    await interaction.reply({ content: `title manga ${manga.LatestChapter}` });
+    await interaction.reply({ content: `Manga ${manga.Title}, check out here ${manga.LatestChapter}` });
   };
 });
 
