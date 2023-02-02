@@ -6,13 +6,13 @@ const TOKEN = process.env.TOKEN
 const APP_ID = process.env.APP_ID
 
 // Exit handler
-["SIGTERM", "SIGINT"].forEach(event => {
-  process.on(event, () => {
-    console.log(`${event} received, exiting. . .`);
-    client.destroy();
-    process.exitCode = 0;
-  });
-});
+// ["SIGTERM", "SIGINT"].forEach(event => {
+//   process.on(event, () => {
+//     console.log(`${event} received, exiting. . .`);
+//     client.destroy();
+//     process.exitCode = 0;
+//   });
+// });
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
