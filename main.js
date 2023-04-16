@@ -14,6 +14,29 @@ const APP_ID = process.env.APP_ID
 //   });
 // });
 
+/**
+ * Setup background tasks
+ * @param {Client} client 
+ */
+async function setupTasks(client) {
+  const { readDir } = require("node:fs/promises");
+  const { CronJob } = require("cron");
+  const channel = await client.channels.fetch(process.env.CHANNEL_ID);
+
+  const taskFiles = await readDir("./tasks");
+  const jobs = [];
+  for (const taskFile of taskFiles.filter(file => file.endsWith(".js"))) {
+    const task = require(taskFile);
+    jobs.push(new CronJob(
+      task.crontab,
+      () => { task.execute(channel) },
+      null,
+      true,
+      "Asia/Jakarta"
+    ));
+  }
+}
+
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
