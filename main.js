@@ -2,8 +2,8 @@ const { REST, Routes, Client, GatewayIntentBits } = require('discord.js');
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 const axios = require('axios');
 const {newManga} = require('./manga.js');
-const TOKEN = process.env.TOKEN
-const APP_ID = process.env.APP_ID
+const TOKEN = process.env.TOKEN;
+const APP_ID = process.env.APP_ID;
 
 // Exit handler
 // ["SIGTERM", "SIGINT"].forEach(event => {
@@ -19,14 +19,14 @@ const APP_ID = process.env.APP_ID
  * @param {Client} client 
  */
 async function setupTasks(client) {
-  const { readDir } = require("node:fs/promises");
+  const { readdir } = require("node:fs/promises");
   const { CronJob } = require("cron");
   const channel = await client.channels.fetch(process.env.CHANNEL_ID);
 
-  const taskFiles = await readDir("./tasks");
+  const taskFiles = await readdir("./tasks");
   const jobs = [];
   for (const taskFile of taskFiles.filter(file => file.endsWith(".js"))) {
-    const task = require(taskFile);
+    const task = require(`./tasks/${taskFile}`);
     jobs.push(new CronJob(
       task.crontab,
       () => { task.execute(channel) },
@@ -39,6 +39,7 @@ async function setupTasks(client) {
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
+  setupTasks(client);
 });
 
 client.on('interactionCreate', async interaction => {
