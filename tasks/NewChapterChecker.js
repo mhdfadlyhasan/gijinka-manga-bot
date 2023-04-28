@@ -1,5 +1,13 @@
 const { readFile, writeFile } = require("node:fs/promises");
 const axios = require("axios");
+const mariadb = require("mariadb");
+const pool = mariadb.createPool({
+	host: process.env.DB_HOST,
+	user: process.env.DB_USER,
+	password: process.env.DB_PASS,
+	database: process.env.DB_NAME,
+	connectionLimit: 5
+});
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 
 const crontabScheduleChapterChecker = process.env.CHAPTER_CHECKER_CRONTAB_SCHEDULE;
@@ -18,6 +26,22 @@ async function getMangaByID(mangaID) {
 		return res.data.data.attributes.title.en;
 	} catch (e) {
 		console.error(e);
+	}
+}
+
+async function getMangaLatestChapter() {
+	let conn, rows;
+	try {
+		conn = await pool.getConnection();
+		rows = await conn.query("SELECT * FROM `latest_chapter`");
+		console.log(rows);
+	} catch (err) {
+		throw new Error(err);
+	} finally {
+		if (conn) {
+			await conn.end();
+			return rows;
+		}
 	}
 }
 
