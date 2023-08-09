@@ -37,14 +37,21 @@ client.on("interactionCreate", async (interaction) => {
   }
 
   if (interaction.commandName === "crawler") {
-    const url_params = interaction.options.getString('url', true); // Required parameter
-    const class_params = interaction.options.getString('class_list');
+    const url_params = interaction.options.getString("url", true); // Required parameter
+    const class_params = interaction.options.getString("class_list");
+    const search_index = interaction.options.getString("search_word");
     await interaction.deferReply();
     const resp = await axios.get("http://127.0.0.1:8000/parser", {
-      params: { url:url_params, class_list:class_params },
+      params: { url: url_params, class_list: class_params },
     });
     crawl_result = String(resp.data);
-    await interaction.editReply({ content: crawl_result });
+    crawl_result = crawl_result.split("\n");
+
+    crawl_result.forEach(async function myFunction(item, index) {
+      if (item.search(search_index) != -1) {
+        await interaction.editReply({ content: item });
+      }
+    });
   }
 });
 
@@ -70,6 +77,12 @@ const commands = [
       {
         name: "class_list",
         description: "tag class to crawl / get",
+        required: false,
+        type: 3,
+      },
+      {
+        name: "search_word",
+        description: "word_to_find",
         required: false,
         type: 3,
       },
