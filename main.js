@@ -1,7 +1,7 @@
 const { REST, Routes, Client, GatewayIntentBits } = require("discord.js");
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-const axios = require("axios");
-const { newManga } = require("./manga.js");
+const axios = require('axios');
+const {newManga} = require('./manga.js')
 const TOKEN = process.env.TOKEN;
 const APP_ID = process.env.APP_ID;
 
@@ -14,8 +14,32 @@ const APP_ID = process.env.APP_ID;
 //   });
 // });
 
-client.on("ready", () => {
+/**
+ * Setup background tasks
+ * @param {Client} client 
+ */
+async function setupTasks(client) {
+  const { readdir } = require("node:fs/promises");
+  const { CronJob } = require("cron");
+  const channel = await client.channels.fetch(process.env.CHANNEL_ID);
+
+  const taskFiles = await readdir("./tasks");
+  const jobs = [];
+  for (const taskFile of taskFiles.filter(file => file.endsWith(".js"))) {
+    const task = require(`./tasks/${taskFile}`);
+    jobs.push(new CronJob(
+      task.crontab,
+      () => { task.execute(channel) },
+      null,
+      true,
+      "Asia/Jakarta"
+    ));
+  }
+}
+
+client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
+  setupTasks(client);
 });
 
 client.on("interactionCreate", async (interaction) => {
