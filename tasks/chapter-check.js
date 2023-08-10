@@ -1,3 +1,4 @@
+const axios = require("axios");
 const mariadb = require("mariadb");
 const { MongoClient } = require("mongodb");
 
@@ -73,6 +74,26 @@ module.exports = {
 		try {
 			for await (const row of rows) {
 				console.log(row);
+
+				// GET chapter terbaru dari mangadex API
+				const res = await axios({
+					method: "GET",
+					url: `https://api.mangadex.org/manga/${row.mangaID}/feed`,
+					params: {
+						translatedLanguage: ["en", "id"],
+						order: {
+							chapter: "desc"
+						},
+						limit: 1
+					}
+				});
+
+				if (res.data.data[0].attributes.chapter > row.latest) {
+					const latest = res.data.data[0].attributes.chapter;
+					console.log(`New chapter: ${latest}`);
+
+					// TODO: cari cara update row yang ada di DB
+				}
 			}
 		} catch (error) {
 			rows.close();
