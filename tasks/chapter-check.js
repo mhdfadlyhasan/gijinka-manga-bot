@@ -41,7 +41,7 @@ class DBWrapper {
 	constructor() {
 		if (process.env.DB_TYPE === "mongodb") {
 			const uri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}/${process.env.DB_NAME}`;
-			this.#dbconn = new MongoDBWrapper(uri);
+			this.dbconn = new MongoDBWrapper(uri);
 		} else if (process.env.DB_TYPE === "mariadb") {
 			const uri = {
 				host: process.env.DB_HOST,
@@ -49,14 +49,14 @@ class DBWrapper {
 				password: process.env.DB_PASS,
 				database: process.env.DB_NAME,
 			};
-			this.#dbconn = new MariaDBWrapper(uri);
+			this.dbconn = new MariaDBWrapper(uri);
 		} else {
-			this.#dbconn = undefined;
+			this.dbconn = undefined;
 		}
 	}
 
 	get data() {
-		return this.#dbconn.run();
+		return this.dbconn.run();
 	}
 }
 
