@@ -9,7 +9,12 @@
  */
 import { AutoRouter, json, error } from "itty-router";
 import { InteractionResponseType, InteractionType, verifyKey } from "discord-interactions";
-import { PING, DEFERRED_PING } from "./commands.js";
+import * as commands from "./commandFiles.js";
+
+const commandMap = new Map();
+for (const command of Object.values(commands)) {
+	commandMap.set(command.name, command);
+}
 
 const router = AutoRouter();
 
@@ -30,17 +35,11 @@ router.post("/", verifyKeyMiddleware, async (req, env, ctx) => {
 	if (interaction.type === InteractionType.PING) return json({ type: InteractionResponseType.PONG });
 
 	if (interaction.type === InteractionType.APPLICATION_COMMAND) {
-		switch (interaction.data.name.toLowerCase()) {
-			case PING.name.toLowerCase(): {
-				return await PING.execute(interaction, ctx);
-			}
-
-			case DEFERRED_PING.name.toLowerCase(): {
-				return await DEFERRED_PING.execute(interaction, ctx);
-			}
-
-			default:
-				return json({ error: "Unknown interaction"}, { status: 400 });
+		const command = commandMap.get(interaction.data.name.toLowerCase());
+		if (command) {
+			return await command.execute({interaction, req, env, ctx});
+		} else {
+			return json({ error: "Unknown interaction" }, { status: 400 });
 		}
 	}
 });

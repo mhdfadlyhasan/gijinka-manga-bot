@@ -1,19 +1,6 @@
 import { InteractionResponseType } from "discord-interactions";
 import { json } from "itty-router";
 
-export const PING = {
-	name: "ping",
-	description: "Replies with Pong!",
-	execute(interaction) {
-		return json({
-			type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-			data: {
-				content: "sePong!"
-			}
-		})
-	}
-};
-
 async function a231_deferred(interaction) {
 	// Pura-pura GET
 	await new Promise(resolve => setTimeout(resolve, 5000));
@@ -31,13 +18,13 @@ async function a231_deferred(interaction) {
 	return await fetch(req);
 }
 
-export const DEFERRED_PING = {
+export const deferred_ping = {
 	name: "deferred-ping",
 	description: "Replies with Pong! 5 seconds later",
-	execute(interaction, ctx) {
+	execute({interaction, ctx}) {
 		ctx.waitUntil(a231_deferred(interaction));
 		return json({
 			type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
 		});
 	}
-}
+};
