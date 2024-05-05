@@ -37,6 +37,18 @@ async function _execute(app_id, token) {
 export const fourch = {
 	name: "4cthread",
 	description: "do your lurk reps",
+	options: [{
+		type: 3,
+		name: "board",
+		description: "which board",
+		required: true
+	}, {
+		type: 4,
+		name: "limit",
+		description: "how many",
+		max_value: 10,
+		min_value: 1
+	}],
 	execute({ interaction, ctx }) {
 		ctx.waitUntil(_execute(interaction.application_id, interaction.token));
 
