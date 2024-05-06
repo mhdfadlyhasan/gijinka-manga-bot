@@ -19,17 +19,20 @@ async function editReply(app_id, token) {
 }
 
 export const deferred_ping = {
-	name: "deferred-ping",
-	description: "Replies with Pong! 5 seconds later",
-	execute({interaction, ctx}) {
+	data: {
+		name: "deferred-ping",
+		description: "Replies with Pong! 5 seconds later",
+	},
+	
+	execute({ interaction, ctx }) {
 		// Ini kayak editReply, ctx.waitUntil() biar worker-nya gak langsung meninggoy
 		ctx.waitUntil(editReply(interaction.application_id, interaction.token));
-		
+
 		// Ini kayak deferReply
 		return json({
 			type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
 		});
-		
+
 		// Dibalik biar pusing
 	}
 };
