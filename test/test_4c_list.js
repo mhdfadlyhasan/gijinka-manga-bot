@@ -64,6 +64,7 @@ function htmlclean(escapedHTML) {
 
 const threadArr = [];
 const tempThreadArr = [];
+const tempRep = new Map();
 const threadList = getThreadList("vt").then((resp) => {
   resp.forEach((page) => {
     page.threads.forEach((item) => {
@@ -87,44 +88,50 @@ const threadList = getThreadList("vt").then((resp) => {
         fullFilename = `${post.filename}${post.ext}`
       }
       idMap.set(post.no, 0);
-      const tempThreadObj = {
-        id: post.no,
-        body: post.com,
-        time: post.time,
-        file: fullFilename,
-      };
-      if (tempThreadObj.body) {
-        if(res = htmlclean(tempThreadObj.body).match(/(?:>>)|([0-9])+/g)) {
-          let tempRes = parseInt(res[1])
-          // not increasing
-          idMap.set(tempRes, (idMap.get(tempRes)) + 1);
-          if ((idMap.get(tempRes) > idMap.get(maxRep)) || (!idMap.get(maxRep)) || (idMap.get(maxRep) == NaN)) {
-            console.log(idMap.get(maxRep));
-            maxRep = tempRes;
-          }
+
+      // use map for each iter
+
+      tempRep.set(post.no, {
+        body: post.com, 
+        time: post.time, 
+        file: fullFilename, 
+        count: 0
+      });
+
+      // use obj for each iter
+
+      // const tempThreadObj = {
+      //   id: post.no,
+      //   body: post.com,
+      //   time: post.time,
+      //   file: fullFilename,
+      // };
+
+      if(post.com && (res = htmlclean(post.com).match(/(?:>>)|([0-9])+/g))){
+        let tempRes = parseInt(res[1]);
+        idMap.set(tempRes, (idMap.get(tempRes)) + 1);
+        if(mentions = tempRep.get(tempRes)){
+          mentions.count++;
         }
       }
-      tempThreadArr.push(tempThreadObj);
+
+      // old code with arr and obj
+      
+      // tempThreadArr.push(tempThreadObj);
+      // if (tempThreadObj.body) {
+      //   if(res = htmlclean(tempThreadObj.body).match(/(?:>>)|([0-9])+/g)) {
+      //     let tempRes = parseInt(res[1]);
+      //     idMap.set(tempRes, (idMap.get(tempRes)) + 1);
+      //     if ((idMap.get(tempRes) > idMap.get(maxRep)) || (!idMap.get(maxRep)) || (idMap.get(maxRep) == NaN)) {
+      //       console.log(idMap.get(maxRep));
+      //       maxRep = tempRes;
+      //     }
+      //   }
+      // }
     });
-    console.log(maxRep);
     console.log("----- done check map val -----");
-    const pos = tempThreadArr.map(e => e.id).indexOf(maxRep);
-    console.log(pos);
-    console.log(tempThreadArr[pos]);
-    console.log(tempThreadArr[0]);
+    // const pos = tempThreadArr.map(e => e.id).indexOf(tempRes);
+    // console.log(pos);
+    tempRep.forEach((id) => console.log(id));
   });
-
-  // threadArr.forEach(list => {
-  //   const tempThread = getThread("vt", list.thread).then((resp) => {
-  //     resp.forEach((posts) => {
-  //       console.log(posts);
-  //     })
-  //   });
-  // });
 });
-
-// const threadL = getThread("vt", threadArr[0].thread).then((resp) => {
-//   resp.forEach((posts) => {
-//     console.log(posts);
-//   })
-// })

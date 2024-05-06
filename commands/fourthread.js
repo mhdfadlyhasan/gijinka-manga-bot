@@ -93,7 +93,7 @@ module.exports = {
 
     console.log(res);
 
-    const embed = new EmbedBuilder().setColor(789922).setTitle(`>>${res.id}`).setURL(`https://boards.4chan.org/${boardParams}/thread/${threadParams}#p${res.id}`).setFooter({text:`${idMap.get(res.id)} mentions`, iconURL: 'https://s.4cdn.org/image/foundericon.gif'})
+    const embed = new EmbedBuilder().setColor(`DarkGreen`).setTitle(`>>${res.id}`).setURL(`https://boards.4chan.org/${boardParams}/thread/${threadParams}#p${res.id}`).setFooter({text:`${idMap.get(res.id)} mentions`, iconURL: 'https://s.4cdn.org/image/foundericon.gif'})
     if (!res.body) {
       if (!res.file) {
         embed.setDescription(`either deleted or jannies sucks - ${res.time}`)
