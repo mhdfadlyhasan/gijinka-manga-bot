@@ -9,7 +9,8 @@
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
     "start": "wrangler dev",
-    "test": "vitest"
+    "test": "vitest",
+    "register": "dotenvx run --env-file=.dev.vars -- node src/utils/register.js"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,7 @@
   "homepage": "https://github.com/mhdfadlyhasan/gijinka-manga-bot#readme",
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.1.0",
+    "@dotenvx/dotenvx": "^0.37.1",
     "vitest": "1.3.0",
     "wrangler": "^3.0.0"
   },
