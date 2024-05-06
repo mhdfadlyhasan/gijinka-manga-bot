@@ -13,7 +13,7 @@ import * as commands from "./commandFiles.js";
 
 const commandMap = new Map();
 for (const command of Object.values(commands)) {
-	commandMap.set(command.name, command);
+	commandMap.set(command.data.name, command);
 }
 
 const router = AutoRouter();
