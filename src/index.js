@@ -10,6 +10,7 @@
 import { AutoRouter, json, error } from "itty-router";
 import { InteractionResponseType, InteractionType, verifyKey } from "discord-interactions";
 import * as commands from "./commandFiles.js";
+import * as tasks from "./taskFiles.js";
 
 const commandMap = new Map();
 for (const command of Object.values(commands)) {
@@ -44,5 +45,11 @@ router.post("/", verifyKeyMiddleware, async (req, env, ctx) => {
 	}
 });
 
+async function scheduled(event, env, ctx) {
+	for (const task of Object.values(tasks)) {
+		ctx.waitUntil(task.execute(event, env));
+	}
+}
+
 // https://github.com/kwhitley/itty-router/issues/240
-export default { ...router };
+export default { ...router, scheduled };
